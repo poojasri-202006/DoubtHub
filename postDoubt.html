@@ -75,13 +75,37 @@
 <footer class="footer">© 2026 DoubtHub · Learn · Share · Grow</footer>
 
 <script>
-document.getElementById("doubtForm").addEventListener("submit", function(event) {
+document.getElementById("doubtForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    document.getElementById("postMessage").textContent =
-        "Form validated. Connect the backend to save your doubt to MongoDB.";
+    const message = document.getElementById("postMessage");
+    const token = sessionStorage.getItem("doubthubToken");
+
+    try {
+        const response = await fetch("/api/doubts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                course: document.getElementById("course").value,
+                courseCode: document.getElementById("courseCode").value.trim(),
+                topic: document.getElementById("topic").value.trim(),
+                title: document.getElementById("questionTitle").value.trim(),
+                description: document.getElementById("question").value.trim()
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message);
+
+        message.textContent = result.message;
+        document.getElementById("doubtForm").reset();
+    } catch (error) {
+        message.textContent = error.message;
+    }
 });
 </script>
-
 </body>
 </html>

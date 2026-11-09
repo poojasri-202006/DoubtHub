@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,10 +55,10 @@
         <div class="card">
             <span class="eyebrow">COMMUNITY</span>
 
-            <div class="stat-number">24</div>
+            <div class="stat-number" id="doubtCount">0</div>
 
             <div class="stat-label">
-                Doubts shared this week
+                Doubts shared in your class
             </div>
         </div>
 
@@ -89,45 +88,7 @@
 
     </div>
 
-    <div class="card question-card">
-
-        <span class="badge">Web Development</span>
-
-        <h3>
-            What is the difference between localStorage and sessionStorage?
-        </h3>
-
-        <div class="question-meta">
-            <span>Posted by a classmate</span>
-            <span>•</span>
-            <span>3 answers</span>
-        </div>
-
-        <a href="viewDoubts.html" class="btn btn-small">
-            View discussion
-        </a>
-
-    </div>
-
-    <div class="card question-card">
-
-        <span class="badge badge-blue">Database Management</span>
-
-        <h3>
-            Can someone explain primary keys and candidate keys?
-        </h3>
-
-        <div class="question-meta">
-            <span>Posted by a classmate</span>
-            <span>•</span>
-            <span>2 answers</span>
-        </div>
-
-        <a href="viewDoubts.html" class="btn btn-small">
-            View discussion
-        </a>
-
-    </div>
+    <div id="recentDoubts"></div>
 
     <div class="section-heading">
         <h2>Classroom reminder</h2>
@@ -149,6 +110,50 @@
 <footer class="footer">
     © 2026 DoubtHub · Learn · Share · Grow
 </footer>
+
+<script>
+(async function () {
+    const authToken = sessionStorage.getItem("doubthubToken");
+    const box = document.getElementById("recentDoubts");
+    const counter = document.getElementById("doubtCount");
+
+    function esc(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    try {
+        const res = await fetch("/api/doubts", {
+            headers: { Authorization: "Bearer " + authToken }
+        });
+        const doubts = await res.json();
+
+        if (!res.ok) {
+            box.innerHTML = '<div class="card"><p>Could not load doubts.</p></div>';
+            return;
+        }
+
+        counter.textContent = doubts.length;
+
+        if (doubts.length === 0) {
+            box.innerHTML = '<div class="card"><p>No doubts yet. Be the first to ask!</p></div>';
+            return;
+        }
+
+        box.innerHTML = doubts.slice(0, 3).map(function (d) {
+            return '<div class="card question-card">' +
+                '<span class="badge">' + esc(d.course) + '</span>' +
+                '<h3>' + esc(d.title) + '</h3>' +
+                '<div class="question-meta"><span>Posted by a classmate</span>' +
+                '<span>•</span><span>' + d.answers.length + ' answers</span></div>' +
+                '<a href="viewDoubts.html" class="btn btn-small">View discussion</a></div>';
+        }).join("");
+    } catch (error) {
+        box.innerHTML = '<div class="card"><p>Could not load doubts.</p></div>';
+    }
+})();
+</script>
 
 </body>
 </html>
