@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtHub | Class Doubts</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<nav class="topbar">
+    <a href="facultyDashboard.html" class="brand">DoubtHub<span>.</span></a>
+    <div class="top-links">
+        <a href="facultyDashboard.html">Dashboard</a>
+        <a href="facultyDoubts.html" class="active">Class Doubts</a>
+        <a href="index.html">Logout</a>
+    </div>
+</nav>
+
+<main class="page-container">
+    <p class="eyebrow">CLASSROOM OVERVIEW</p>
+    <h1 class="page-title">Student Doubts</h1>
+    <p class="page-subtitle">
+        Review questions from your assigned subjects and
+        identify topics that may need additional explanation.
+    </p>
+
+    <div class="card-grid">
+        <div class="card">
+            <div class="stat-number">12</div>
+            <div class="stat-label">Total doubts today</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Unanswered doubts</div>
+        </div>
+
+        <div class="card">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Doubts with answers</div>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <h2>Questions from your classroom</h2>
+    </div>
+
+    <div class="card">
+        <div class="form-group">
+            <label for="subjectFilter">Filter by subject</label>
+            <select id="subjectFilter">
+                <option value="all">All subjects</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Database Management">Database Management</option>
+                <option value="Data Structures">Data Structures</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="statusFilter">Filter by status</label>
+            <select id="statusFilter">
+                <option value="all">All questions</option>
+                <option value="unanswered">Unanswered</option>
+                <option value="answered">Answered</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="facultyQuestionList">
+        <article class="card question-card"
+                 data-subject="Web Development" data-status="unanswered">
+            <span class="badge">Web Development</span>
+            <span class="badge">Unanswered</span>
+            <h3>How does event bubbling work in JavaScript?</h3>
+            <div class="question-meta">
+                <span>Course code: WD101</span>
+                <span>•</span>
+                <span>Topic: JavaScript Events</span>
+            </div>
+            <p>Students have raised a question about how events move through HTML elements.</p>
+            <p class="form-note">Student identity hidden</p>
+        </article>
+
+        <article class="card question-card"
+                 data-subject="Database Management" data-status="answered">
+            <span class="badge badge-blue">Database Management</span>
+            <span class="badge badge-green">Answered</span>
+            <h3>What is the difference between sparse and dense indexing?</h3>
+            <div class="question-meta">
+                <span>Course code: DB102</span>
+                <span>•</span>
+                <span>Topic: Indexing</span>
+            </div>
+            <p>This question has received a classroom answer.</p>
+            <p class="form-note">Student identity hidden</p>
+        </article>
+
+        <article class="card question-card"
+                 data-subject="Data Structures" data-status="unanswered">
+            <span class="badge">Data Structures</span>
+            <span class="badge">Unanswered</span>
+            <h3>How do we implement a circular queue using an array?</h3>
+            <div class="question-meta">
+                <span>Course code: DS103</span>
+                <span>•</span>
+                <span>Topic: Queues</span>
+            </div>
+            <p>This topic may need additional explanation during class.</p>
+            <p class="form-note">Student identity hidden</p>
+        </article>
+    </div>
+
+    <p id="filterMessage" class="form-note" aria-live="polite"></p>
+</main>
+
+<footer class="footer">© 2026 DoubtHub · Faculty Dashboard</footer>
+
+<script>
+function filterQuestions() {
+    const subject = document.getElementById("subjectFilter").value;
+    const status = document.getElementById("statusFilter").value;
+    const cards = document.querySelectorAll("#facultyQuestionList .question-card");
+    let visibleCount = 0;
+
+    cards.forEach(function(card) {
+        const subjectMatches =
+            subject === "all" || card.dataset.subject === subject;
+
+        const statusMatches =
+            status === "all" || card.dataset.status === status;
+
+        if (subjectMatches && statusMatches) {
+            card.style.display = "block";
+            visibleCount++;
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    document.getElementById("filterMessage").textContent =
+        visibleCount === 0 ? "No questions match these filters." : "";
+}
+
+document.getElementById("subjectFilter")
+    .addEventListener("change", filterQuestions);
+
+document.getElementById("statusFilter")
+    .addEventListener("change", filterQuestions);
+</script>
+
+</body>
+</html>

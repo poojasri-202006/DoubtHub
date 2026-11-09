@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtHub | Ask a Doubt</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<nav class="topbar">
+    <a href="studentDashboard.html" class="brand">DoubtHub<span>.</span></a>
+    <div class="top-links">
+        <a href="studentDashboard.html">Dashboard</a>
+        <a href="postDoubt.html" class="active">Ask a Doubt</a>
+        <a href="viewDoubts.html">Explore Doubts</a>
+        <a href="index.html">Logout</a>
+    </div>
+</nav>
+
+<main class="page-container">
+    <p class="eyebrow">ASK THE COMMUNITY</p>
+    <h1 class="page-title">What are you curious about?</h1>
+    <p class="page-subtitle">
+        Describe what you are finding difficult. Your classmates
+        can help you understand it.
+    </p>
+
+    <section class="card form-card">
+        <form id="doubtForm">
+            <div class="form-group">
+                <label for="course">Select Course</label>
+                <select id="course" required>
+                    <option value="">Choose your course</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Database Management">Database Management</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Operating Systems">Operating Systems</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="courseCode">Course Code</label>
+                <input type="text" id="courseCode"
+                       placeholder="Enter the course code" required>
+                <p class="form-note">Use the course code provided by your college.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="topic">Topic (optional)</label>
+                <input type="text" id="topic"
+                       placeholder="e.g. JavaScript storage">
+            </div>
+
+            <div class="form-group">
+                <label for="questionTitle">Doubt Title</label>
+                <input type="text" id="questionTitle"
+                       placeholder="Summarize your question in one line" required>
+            </div>
+
+            <div class="form-group">
+                <label for="question">Explain your doubt</label>
+                <textarea id="question"
+                          placeholder="Explain what you understand and where you are stuck..."
+                          required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-gold">Post My Doubt →</button>
+            <p id="postMessage" class="form-note" aria-live="polite"></p>
+        </form>
+    </section>
+</main>
+
+<footer class="footer">© 2026 DoubtHub · Learn · Share · Grow</footer>
+
+<script>
+document.getElementById("doubtForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    document.getElementById("postMessage").textContent =
+        "Form validated. Connect the backend to save your doubt to MongoDB.";
+});
+</script>
+
+</body>
+</html>

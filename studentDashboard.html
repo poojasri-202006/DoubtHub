@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DoubtHub | Student Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="dashboard-auth.js" defer></script>
+</head>
+
+<body data-role="student">
+
+<nav class="topbar">
+
+    <a href="studentDashboard.html" class="brand">
+        DoubtHub<span>.</span>
+    </a>
+
+    <div class="top-links">
+        <a href="studentDashboard.html" class="active">Dashboard</a>
+        <a href="postDoubt.html">Ask a Doubt</a>
+        <a href="viewDoubts.html">Explore Doubts</a>
+        <a href="index.html" id="logoutLink">Logout</a>
+    </div>
+
+</nav>
+
+<main class="page-container">
+
+    <p class="eyebrow">STUDENT SPACE</p>
+
+    <h1 class="page-title">
+        Learn something new today, <span id="userName">Student</span>.
+    </h1>
+
+    <p class="page-subtitle">
+        Every doubt is a step towards understanding.
+        Ask questions, share knowledge, and grow together.
+    </p>
+
+    <div class="card-grid">
+
+        <div class="card">
+            <span class="eyebrow">YOUR CLASSROOM</span>
+
+            <h3 id="classInfo">Your classroom</h3>
+
+            <p>
+                Connect with classmates and learn together.
+            </p>
+        </div>
+
+        <div class="card">
+            <span class="eyebrow">COMMUNITY</span>
+
+            <div class="stat-number">24</div>
+
+            <div class="stat-label">
+                Doubts shared this week
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="eyebrow">QUICK ACTION</span>
+
+            <h3>Stuck on a topic?</h3>
+
+            <p>
+                Post your doubt and get help from your classmates.
+            </p>
+
+            <a href="postDoubt.html" class="btn btn-gold">
+                Ask a Doubt →
+            </a>
+        </div>
+
+    </div>
+
+    <div class="section-heading">
+
+        <h2>Recent classroom doubts</h2>
+
+        <a href="viewDoubts.html" class="btn btn-outline btn-small">
+            View all
+        </a>
+
+    </div>
+
+    <div class="card question-card">
+
+        <span class="badge">Web Development</span>
+
+        <h3>
+            What is the difference between localStorage and sessionStorage?
+        </h3>
+
+        <div class="question-meta">
+            <span>Posted by a classmate</span>
+            <span>•</span>
+            <span>3 answers</span>
+        </div>
+
+        <a href="viewDoubts.html" class="btn btn-small">
+            View discussion
+        </a>
+
+    </div>
+
+    <div class="card question-card">
+
+        <span class="badge badge-blue">Database Management</span>
+
+        <h3>
+            Can someone explain primary keys and candidate keys?
+        </h3>
+
+        <div class="question-meta">
+            <span>Posted by a classmate</span>
+            <span>•</span>
+            <span>2 answers</span>
+        </div>
+
+        <a href="viewDoubts.html" class="btn btn-small">
+            View discussion
+        </a>
+
+    </div>
+
+    <div class="section-heading">
+        <h2>Classroom reminder</h2>
+    </div>
+
+    <div class="card">
+
+        <h3>Knowledge grows when shared.</h3>
+
+        <p>
+            Be respectful, explain your answers clearly,
+            and help your classmates learn.
+        </p>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    © 2026 DoubtHub · Learn · Share · Grow
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtHub | Welcome</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="brand"><span class="brand-icon">D</span> DoubtHub<span class="dot">.</span></a>
+        <span class="nav-text">THE ART OF LEARNING TOGETHER</span>
+    </nav>
+
+    <main class="page">
+        <section class="welcome-panel">
+            <div class="eyebrow"><span></span> YOUR CLASSROOM, CONNECTED</div>
+
+            <h1>Great minds<br>don't learn <i>alone.</i></h1>
+
+            <p class="welcome-text">
+                Every question opens a door. Connect with your
+                classmates, exchange ideas, and make every
+                lesson count.
+            </p>
+
+            <div class="quote">
+                <span class="quote-mark">“</span>
+                <p>The beautiful thing about learning is that
+                nobody can take it away from you.</p>
+                <small>— B.B. King</small>
+            </div>
+
+            <div class="bottom-note">
+                <span class="status-dot"></span>
+                A better way to learn, together.
+            </div>
+        </section>
+
+        <section class="form-panel">
+            <div class="form-heading">
+                <p class="eyebrow">WELCOME TO DOUBTHUB</p>
+                <h2 id="formTitle">Sign in to your world.</h2>
+                <p id="formSubtitle">Pick up where your curiosity left off.</p>
+            </div>
+
+            <div class="role-switch">
+                <button type="button" class="role active" data-role="student">
+                    Student
+                </button>
+                <button type="button" class="role" data-role="faculty">
+                    Faculty
+                </button>
+            </div>
+
+            <div class="mode-switch">
+                <button type="button" id="loginTab" class="mode active">
+                    Sign In
+                </button>
+                <button type="button" id="registerTab" class="mode">
+                    Create Account
+                </button>
+            </div>
+
+            <form id="authForm">
+                <div id="nameField" class="field hidden">
+                    <label for="fullName">Full name</label>
+                    <input id="fullName" type="text"
+                           placeholder="Enter your full name">
+                </div>
+
+                <div class="field">
+                    <label id="idLabel" for="userId">Student ID</label>
+                    <input id="userId" type="text"
+                           placeholder="Enter your student ID" required>
+                </div>
+
+                <div id="emailField" class="field hidden">
+                    <label for="email">Email address</label>
+                    <input id="email" type="email"
+                           placeholder="you@college.edu">
+                </div>
+
+                <div id="classField" class="field hidden">
+                    <div class="field-row">
+                        <div>
+                            <label for="className">Class</label>
+                            <input id="className" type="text"
+                                   placeholder="e.g. MCA">
+                        </div>
+                        <div>
+                            <label for="section">Section</label>
+                            <input id="section" type="text"
+                                   placeholder="e.g. A">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subjectField" class="field hidden">
+                    <label for="subjects">Assigned subject(s)</label>
+                    <input id="subjects" type="text"
+                           placeholder="e.g. Web Development">
+                    <small>Enter the subjects assigned to you.</small>
+                </div>
+
+                <div class="field">
+                    <div class="label-row">
+                        <label for="password">Password</label>
+                        <button type="button" id="togglePassword"
+                                class="text-button">Show</button>
+                    </div>
+                    <input id="password" type="password"
+                           placeholder="Enter your password" required>
+                </div>
+
+                <div id="confirmField" class="field hidden">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input id="confirmPassword" type="password"
+                           placeholder="Re-enter your password">
+                </div>
+
+                <div id="formOptions" class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+                    <span class="secure-note">Private & secure</span>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Sign In <span>→</span>
+                </button>
+
+                <p id="formMessage" class="message" aria-live="polite"></p>
+            </form>
+
+            <p class="switch-text" id="switchText">
+                New to DoubtHub?
+                <button type="button" id="switchMode">Create an account</button>
+            </p>
+
+            <p class="terms">
+                By continuing, you agree to use DoubtHub respectfully
+                and responsibly.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <span>© 2026 DoubtHub</span>
+        <span>LEARN · SHARE · GROW</span>
+    </footer>
+
+</body>
+</html>

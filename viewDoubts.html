@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtHub | Explore Doubts</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<nav class="topbar">
+    <a href="studentDashboard.html" class="brand">DoubtHub<span>.</span></a>
+    <div class="top-links">
+        <a href="studentDashboard.html">Dashboard</a>
+        <a href="postDoubt.html">Ask a Doubt</a>
+        <a href="viewDoubts.html" class="active">Explore Doubts</a>
+        <a href="index.html">Logout</a>
+    </div>
+</nav>
+
+<main class="page-container">
+    <p class="eyebrow">CLASSROOM DISCUSSIONS</p>
+    <h1 class="page-title">Explore and understand.</h1>
+    <p class="page-subtitle">
+        Learn from questions asked by your classmates and share what you know.
+    </p>
+
+    <input type="search" id="searchDoubts" class="search-input"
+           placeholder="Search doubts by topic or question...">
+
+    <div class="section-heading">
+        <h2>Recent doubts</h2>
+        <span class="badge">MCA — Section A</span>
+    </div>
+
+    <div id="doubtList">
+        <article class="card question-card">
+            <span class="badge">Web Development</span>
+            <h3>What is the difference between localStorage and sessionStorage?</h3>
+            <div class="question-meta">
+                <span>Course code: WD101</span>
+                <span>•</span>
+                <span>3 answers</span>
+            </div>
+
+            <div class="answer-box">
+                <strong>Answer 1 · 8 likes</strong>
+                <p>localStorage keeps data until it is manually removed. sessionStorage keeps data for the current browser tab session.</p>
+                <button type="button" class="btn btn-outline btn-small like-btn">
+                    ♡ Like <span class="likes">8</span>
+                </button>
+            </div>
+
+            <div class="answer-box">
+                <strong>Answer 2 · 6 likes</strong>
+                <p>Both store data as strings, but their lifetimes are different. Use JSON.stringify() to store objects.</p>
+                <button type="button" class="btn btn-outline btn-small like-btn">
+                    ♡ Like <span class="likes">6</span>
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-top:20px">
+                <label for="answer1">Your answer</label>
+                <textarea id="answer1" placeholder="Share your explanation..."></textarea>
+            </div>
+            <button type="button" class="btn answer-btn">Submit Answer</button>
+            <p class="form-note answer-message" aria-live="polite"></p>
+        </article>
+
+        <article class="card question-card">
+            <span class="badge badge-blue">Database Management</span>
+            <h3>What is the difference between a primary key and a candidate key?</h3>
+            <div class="question-meta">
+                <span>Course code: DB102</span>
+                <span>•</span>
+                <span>1 answer</span>
+            </div>
+
+            <div class="answer-box">
+                <strong>Answer · 4 likes</strong>
+                <p>A candidate key can uniquely identify a row. One candidate key is selected as the primary key.</p>
+                <button type="button" class="btn btn-outline btn-small like-btn">
+                    ♡ Like <span class="likes">4</span>
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-top:20px">
+                <label for="answer2">Your answer</label>
+                <textarea id="answer2" placeholder="Share your explanation..."></textarea>
+            </div>
+            <button type="button" class="btn answer-btn">Submit Answer</button>
+            <p class="form-note answer-message" aria-live="polite"></p>
+        </article>
+    </div>
+</main>
+
+<footer class="footer">© 2026 DoubtHub · Learn · Share · Grow</footer>
+
+<script>
+document.querySelectorAll(".like-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const count = button.querySelector(".likes");
+        count.textContent = Number(count.textContent) + 1;
+        button.disabled = true;
+        button.style.opacity = "0.6";
+    });
+});
+
+document.querySelectorAll(".answer-btn").forEach(function(button) {
+    button.addEventListener("click", function() {
+        const card = button.closest(".question-card");
+        const answer = card.querySelector("textarea").value.trim();
+        const message = card.querySelector(".answer-message");
+
+        if (answer === "") {
+            message.textContent = "Please enter your answer first.";
+        } else {
+            message.textContent =
+                "Answer entered. Connect the backend to save it to MongoDB.";
+        }
+    });
+});
+
+document.getElementById("searchDoubts").addEventListener("input", function() {
+    const searchText = this.value.toLowerCase();
+
+    document.querySelectorAll("#doubtList .question-card").forEach(function(card) {
+        card.style.display = card.textContent.toLowerCase().includes(searchText)
+            ? "block" : "none";
+    });
+});
+</script>
+
+</body>
+</html>

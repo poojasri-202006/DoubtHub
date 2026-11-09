@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DoubtHub | Faculty Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="dashboard-auth.js" defer></script>
+</head>
+
+<body data-role="faculty">
+
+<nav class="topbar">
+
+    <a href="facultyDashboard.html" class="brand">
+        DoubtHub<span>.</span>
+    </a>
+
+    <div class="top-links">
+        <a href="facultyDashboard.html" class="active">Dashboard</a>
+        <a href="facultyDoubts.html">Class Doubts</a>
+        <a href="index.html" id="logoutLink">Logout</a>
+    </div>
+
+</nav>
+
+<main class="page-container">
+
+    <p class="eyebrow">FACULTY SPACE</p>
+
+    <h1 class="page-title">
+        Welcome, <span id="userName">Faculty</span>.
+    </h1>
+
+    <p class="page-subtitle">
+        Understand what your students find challenging and
+        help them learn with confidence.
+
+        <br><br>
+
+        <strong>Assigned subjects:</strong>
+        <span id="facultySubjects">Loading...</span>
+    </p>
+
+    <div class="card-grid">
+
+        <div class="card">
+            <span class="eyebrow">TODAY</span>
+
+            <div class="stat-number">12</div>
+
+            <div class="stat-label">
+                Doubts raised today
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="eyebrow">NEED ATTENTION</span>
+
+            <div class="stat-number">5</div>
+
+            <div class="stat-label">
+                Questions without answers
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="eyebrow">CLASSROOM</span>
+
+            <div class="stat-number">28</div>
+
+            <div class="stat-label">
+                Doubts raised this week
+            </div>
+        </div>
+
+    </div>
+
+    <div class="section-heading">
+        <h2>Topics students ask about</h2>
+    </div>
+
+    <div class="card-grid">
+
+        <div class="card">
+            <span class="badge">Web Development</span>
+
+            <div class="stat-number">10</div>
+
+            <p>
+                Doubts related to JavaScript and browser storage.
+            </p>
+        </div>
+
+        <div class="card">
+            <span class="badge badge-blue">Database Management</span>
+
+            <div class="stat-number">8</div>
+
+            <p>
+                Doubts related to keys, indexing, and SQL.
+            </p>
+        </div>
+
+        <div class="card">
+            <span class="badge badge-green">Data Structures</span>
+
+            <div class="stat-number">6</div>
+
+            <p>
+                Doubts related to stacks, queues, and arrays.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="section-heading">
+
+        <h2>Questions requiring attention</h2>
+
+        <a href="facultyDoubts.html" class="btn btn-outline btn-small">
+            View all
+        </a>
+
+    </div>
+
+    <div class="card">
+
+        <span class="badge">Web Development</span>
+
+        <h3>
+            How does event bubbling work in JavaScript?
+        </h3>
+
+        <p>
+            Course code: WD101 · No answers yet
+        </p>
+
+        <a href="facultyDoubts.html" class="btn btn-gold">
+            View class doubts →
+        </a>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    © 2026 DoubtHub · Faculty Dashboard
+</footer>
+
+</body>
+</html>
