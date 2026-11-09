@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="dashboard.css">
     <script src="dashboard-auth.js" defer></script>
+    <script src="faculty-analytics.js" defer></script>
 </head>
 
 <body data-role="faculty">
@@ -45,12 +46,14 @@
         <span id="facultySubjects">Loading...</span>
     </p>
 
+    <!-- Analytics cards -->
+
     <div class="card-grid">
 
         <div class="card">
             <span class="eyebrow">TODAY</span>
 
-            <div class="stat-number">12</div>
+            <div class="stat-number" id="todayCount">--</div>
 
             <div class="stat-label">
                 Doubts raised today
@@ -60,7 +63,7 @@
         <div class="card">
             <span class="eyebrow">NEED ATTENTION</span>
 
-            <div class="stat-number">5</div>
+            <div class="stat-number" id="unansweredCount">--</div>
 
             <div class="stat-label">
                 Questions without answers
@@ -68,9 +71,9 @@
         </div>
 
         <div class="card">
-            <span class="eyebrow">CLASSROOM</span>
+            <span class="eyebrow">THIS WEEK</span>
 
-            <div class="stat-number">28</div>
+            <div class="stat-number" id="weekCount">--</div>
 
             <div class="stat-label">
                 Doubts raised this week
@@ -79,43 +82,21 @@
 
     </div>
 
+    <!-- Subject-wise analytics -->
+
     <div class="section-heading">
-        <h2>Topics students ask about</h2>
+        <h2>Doubts by subject</h2>
     </div>
 
-    <div class="card-grid">
+    <div class="card-grid" id="subjectAnalytics">
 
         <div class="card">
-            <span class="badge">Web Development</span>
-
-            <div class="stat-number">10</div>
-
-            <p>
-                Doubts related to JavaScript and browser storage.
-            </p>
-        </div>
-
-        <div class="card">
-            <span class="badge badge-blue">Database Management</span>
-
-            <div class="stat-number">8</div>
-
-            <p>
-                Doubts related to keys, indexing, and SQL.
-            </p>
-        </div>
-
-        <div class="card">
-            <span class="badge badge-green">Data Structures</span>
-
-            <div class="stat-number">6</div>
-
-            <p>
-                Doubts related to stacks, queues, and arrays.
-            </p>
+            Loading subject analytics...
         </div>
 
     </div>
+
+    <!-- Unanswered questions -->
 
     <div class="section-heading">
 
@@ -127,21 +108,11 @@
 
     </div>
 
-    <div class="card">
+    <div id="attentionList">
 
-        <span class="badge">Web Development</span>
-
-        <h3>
-            How does event bubbling work in JavaScript?
-        </h3>
-
-        <p>
-            Course code: WD101 · No answers yet
-        </p>
-
-        <a href="facultyDoubts.html" class="btn btn-gold">
-            View class doubts →
-        </a>
+        <div class="card">
+            Loading unanswered questions...
+        </div>
 
     </div>
 
