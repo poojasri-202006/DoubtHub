@@ -8,12 +8,11 @@ const app = express();
 app.use(express.json());
 app.use("/api/auth", require("./routes/auth"));
 app.use(express.static(__dirname));
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/doubts", require("./routes/doubt"));   
+app.use("/api/doubts", require("./routes/doubt"));
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
-});``
+});
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
