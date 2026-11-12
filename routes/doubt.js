@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const Doubt = require("../models/Doubt");
 const User = require("../models/User");
 
@@ -59,21 +60,95 @@ router.get("/", protect, async (req, res) => {
     }
 });
 
-router.post("/:id/answers", protect, async (req, res) => {
+// Faculty awards an appreciation badge to a doubt
+
+// Faculty awards an appreciation badge to a doubt
+router.post("/:id/appreciation", protect, async (req, res) => {
     try {
-        const text = (req.body.text || "").trim();
-        if (!text) return res.status(400).json({ message: "Please enter an answer." });
+        // Check faculty role
+        if (req.user.role !== "faculty") {
+            return res.status(403).json({
+                message: "Only faculty can award appreciation badges."
+            });
+        }
+
+        // Validate doubt ID
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                message: "Invalid doubt ID."
+            });
+        }
+
+        const { badge } = req.body;
+
+        const validBadges = [
+            "curiosity-spark",
+            "deep-thinker",
+            "mind-bender"
+        ];
+
+        if (!validBadges.includes(badge)) {
+            return res.status(400).json({
+                message: "Invalid appreciation badge."
+            });
+        }
 
         const doubt = await Doubt.findById(req.params.id);
-        if (!doubt) return res.status(404).json({ message: "Doubt not found." });
 
-        doubt.answers.push({ text, answeredBy: req.user.userId });
+        if (!doubt) {
+            return res.status(404).json({
+                message: "Doubt not found."
+            });
+        }
+
+        // Verify faculty subject assignment
+        if (!(req.user.subjects || []).includes(doubt.course)) {
+            return res.status(403).json({
+                message: "You are not assigned to this subject."
+            });
+        }
+
+        // Only one badge per question
+        if (doubt.appreciation) {
+            return res.status(400).json({
+                message: "This question already has an appreciation badge."
+            });
+        }
+
+        // Find student privately
+        const student = await User.findOne({
+            role: "student",
+            userId: doubt.postedBy,
+            className: doubt.className,
+            section: doubt.section
+        });
+
+        if (!student) {
+            return res.status(404).json({
+                message: "Student account not found."
+            });
+        }
+
+        doubt.appreciation = {
+            badge: badge,
+            awardedBy: req.user._id,
+            awardedAt: new Date()
+        };
+
         await doubt.save();
-        res.status(201).json({ message: "Answer saved!" });
+
+        res.status(200).json({
+            message: "Appreciation badge awarded successfully!",
+            badge: doubt.appreciation.badge
+        });
+
     } catch (error) {
-        res.status(500).json({ message: "Server error: " + error.message });
+        res.status(500).json({
+            message: "Server error: " + error.message
+        });
     }
 });
+
 
 router.post("/:id/answers/:answerId/like", protect, async (req, res) => {
     try {
