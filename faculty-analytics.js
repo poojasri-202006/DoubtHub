@@ -1,7 +1,6 @@
 
 // Get the login token
-const token = sessionStorage.getItem("doubthubToken");
-
+const analyticsToken = sessionStorage.getItem("doubthubToken");
 // Get the analytics elements
 const todayCount = document.getElementById("todayCount");
 const unansweredCount = document.getElementById("unansweredCount");
@@ -49,15 +48,14 @@ function isThisWeek(dateValue) {
 // Load faculty analytics
 async function loadFacultyAnalytics() {
     try {
-        if (!token) {
-            throw new Error("Please sign in again.");
-        }
+       if (!analyticsToken) {
+    throw new Error("Please sign in again.");
+}
 
         const response = await fetch("/api/doubts", {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + token
-            }
+              "Authorization": "Bearer " + analyticsToken            }
         });
 
         const doubts = await response.json();
