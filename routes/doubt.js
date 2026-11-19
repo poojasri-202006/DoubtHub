@@ -6,18 +6,46 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+
+   
 async function protect(req, res, next) {
     try {
         const header = req.headers.authorization || "";
-        const token = header.replace("Bearer ", "");
+
+        if (!header.startsWith("Bearer ")) {
+            return res.status(401).json({
+                message: "Please sign in again."
+            });
+        }
+
+        const token = header.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
         req.user = await User.findById(decoded.id);
-        if (!req.user) throw new Error("No user");
+
+        if (!req.user || req.user.role !== decoded.role) {
+            return res.status(401).json({
+                message: "Invalid authentication."
+            });
+        }
+
+        // Prevent access until the temporary password is changed.
+        if (req.user.mustChangePassword) {
+            return res.status(403).json({
+                message: "Please change your temporary password first.",
+                mustChangePassword: true
+            });
+        }
+
         next();
+
     } catch (error) {
-        res.status(401).json({ message: "Please sign in again." });
+        return res.status(401).json({
+            message: "Please sign in again."
+        });
     }
 }
+
 
 router.post("/", protect, async (req, res) => {
     try {

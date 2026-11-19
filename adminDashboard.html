@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtHub | Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f5f7;
+            color: #263746;
+        }
+
+        .navbar {
+            background: #172c35;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .brand span {
+            color: #e7a95b;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #718096;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 25px;
+        }
+
+        .sidebar, .main-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px #0000000a;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 10px;
+            border: none;
+            background: #f3f5f6;
+            text-align: left;
+            border-radius: 7px;
+            cursor: pointer;
+            color: #52616b;
+        }
+
+        .menu-btn.active {
+            background: #172c35;
+            color: white;
+        }
+
+        .main-panel h2 {
+            margin-bottom: 8px;
+        }
+
+        .description {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .role-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .role-btn {
+            padding: 10px 20px;
+            border: 1px solid #dce1e5;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .role-btn.active {
+            background: #e9f0f3;
+            border-color: #172c35;
+            color: #172c35;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dce1e5;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #172c35;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .create-btn {
+            background: #172c35;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .create-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .success {
+            color: #16834b;
+        }
+
+        .error {
+            color: #d33b3b;
+        }
+
+        .notice {
+            background: #fff7e8;
+            color: #805b21;
+            padding: 13px;
+            border-radius: 7px;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        @media(max-width: 700px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="brand">DoubtHub<span>.</span> Admin</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
+
+    <main class="container">
+
+        <section class="welcome">
+            <h1>Welcome, <span id="adminName">Admin</span>!</h1>
+            <p>Manage student and faculty accounts in DoubtHub.</p>
+        </section>
+
+        <div class="dashboard-grid">
+
+            <aside class="sidebar">
+                <h3>Admin Panel</h3>
+
+                <button class="menu-btn active">
+                    Account Management
+                </button>
+
+                <button class="menu-btn" disabled>
+                    Batch Management (Coming soon)
+                </button>
+
+                <button class="menu-btn" disabled>
+                    View Accounts (Coming soon)
+                </button>
+            </aside>
+
+            <section class="main-panel">
+
+                <h2>Create User Account</h2>
+
+                <p class="description">
+                    Create login credentials for students and faculty.
+                </p>
+
+                <div class="role-tabs">
+                    <button type="button"
+                            class="role-btn active"
+                            id="studentTab"
+                            onclick="selectRole('student')">
+                        Student
+                    </button>
+
+                    <button type="button"
+                            class="role-btn"
+                            id="facultyTab"
+                            onclick="selectRole('faculty')">
+                        Faculty
+                    </button>
+                </div>
+
+                <form id="accountForm">
+
+                    <div class="form-group">
+                        <label for="userId">Login ID</label>
+                        <input type="text" id="userId"
+                               placeholder="Enter student ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName"
+                               placeholder="Enter full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email"
+                               placeholder="Enter email address" required>
+                    </div>
+
+                    <div id="studentFields">
+
+                        <div class="form-group">
+                            <label for="className">Class</label>
+                            <input type="text" id="className"
+                                   placeholder="e.g. MCA">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <input type="text" id="section"
+                                   placeholder="e.g. A">
+                        </div>
+
+                    </div>
+
+                    <div id="facultyFields" class="hidden">
+
+                        <div class="form-group">
+                            <label for="subjects">Assigned Subjects</label>
+                            <input type="text" id="subjects"
+                                   placeholder="e.g. Web Development, Java">
+                            <small>Separate multiple subjects using commas.</small>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="temporaryPassword">
+                            Temporary Password
+                        </label>
+
+                        <input type="password"
+                               id="temporaryPassword"
+                               minlength="8"
+                               placeholder="Enter temporary password"
+                               required>
+                    </div>
+
+                    <button type="submit"
+                            class="create-btn"
+                            id="createBtn">
+                        Create Account
+                    </button>
+
+                    <p id="message" class="message"
+                       aria-live="polite"></p>
+
+                </form>
+
+                <div class="notice">
+                    <strong>Note:</strong> Accounts created here are assigned
+                    temporary passwords. Users must change their passwords
+                    before accessing their dashboards. First-login enforcement
+                    will be implemented in the next security step.
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script>
+        const token = sessionStorage.getItem("doubthubToken");
+
+        let currentUser = null;
+
+        try {
+            currentUser = JSON.parse(
+                sessionStorage.getItem("doubthubUser")
+            );
+        } catch (error) {
+            currentUser = null;
+        }
+
+        if (!token || !currentUser || currentUser.role !== "admin") {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("adminName").textContent =
+                currentUser.fullName;
+        }
+
+        let currentRole = "student";
+
+        const accountForm = document.getElementById("accountForm");
+        const message = document.getElementById("message");
+        const createBtn = document.getElementById("createBtn");
+
+        function selectRole(role) {
+            currentRole = role;
+
+            document.getElementById("studentTab")
+                .classList.toggle("active", role === "student");
+
+            document.getElementById("facultyTab")
+                .classList.toggle("active", role === "faculty");
+
+            document.getElementById("studentFields")
+                .classList.toggle("hidden", role !== "student");
+
+            document.getElementById("facultyFields")
+                .classList.toggle("hidden", role !== "faculty");
+
+            document.getElementById("className").required =
+                role === "student";
+
+            document.getElementById("section").required =
+                role === "student";
+
+            document.getElementById("subjects").required =
+                role === "faculty";
+
+            document.getElementById("userId").placeholder =
+                role === "student"
+                    ? "Enter student ID"
+                    : "Enter faculty ID";
+
+            accountForm.reset();
+
+            message.textContent = "";
+            message.className = "message";
+        }
+
+        accountForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            message.textContent = "";
+            message.className = "message";
+
+            const formData = {
+                role: currentRole,
+                userId: document.getElementById("userId").value.trim(),
+                fullName: document.getElementById("fullName").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                temporaryPassword:
+                    document.getElementById("temporaryPassword").value
+            };
+
+            if (currentRole === "student") {
+                formData.className =
+                    document.getElementById("className").value.trim();
+
+                formData.section =
+                    document.getElementById("section").value.trim();
+            }
+
+            if (currentRole === "faculty") {
+                formData.subjects =
+                    document.getElementById("subjects").value
+                        .split(",")
+                        .map(subject => subject.trim())
+                        .filter(Boolean);
+            }
+
+            try {
+                createBtn.disabled = true;
+                createBtn.textContent = "Creating account...";
+
+                const response = await fetch(
+                    "/api/auth/admin/create-account",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token
+                        },
+                        body: JSON.stringify(formData)
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.message || "Account creation failed."
+                    );
+                }
+
+                message.textContent =
+                    result.message +
+                    " Login ID: " + result.account.userId +
+                    ". Temporary password must be shared securely.";
+
+                message.classList.add("success");
+
+                accountForm.reset();
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.classList.add("error");
+
+            } finally {
+                createBtn.disabled = false;
+                createBtn.textContent = "Create Account";
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem("doubthubToken");
+            sessionStorage.removeItem("doubthubUser");
+
+            window.location.href = "index.html";
+        }
+    </script>
+
+</body>
+</html>

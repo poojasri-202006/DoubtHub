@@ -39,8 +39,16 @@ function setRequired(input, required) {
 }
 
 function updateForm() {
+    const isAdmin = currentRole === "admin";
+
+    // Admin is allowed to sign in only.
+    if (isAdmin && currentMode === "register") {
+        currentMode = "login";
+    }
+
     const isRegister = currentMode === "register";
     const isStudent = currentRole === "student";
+    const isFaculty = currentRole === "faculty";
 
     roles.forEach(function (button) {
         button.classList.toggle(
@@ -51,6 +59,7 @@ function updateForm() {
 
     loginTab.classList.toggle("active", !isRegister);
     registerTab.classList.toggle("active", isRegister);
+    registerTab.classList.toggle("hidden", isAdmin);
 
     formTitle.textContent = isRegister
         ? "Create your account."
@@ -60,11 +69,17 @@ function updateForm() {
         ? "Your learning community starts here."
         : "Pick up where your curiosity left off.";
 
-    idLabel.textContent = isStudent ? "Student ID" : "Faculty ID";
+    idLabel.textContent = isStudent
+        ? "Student ID"
+        : isAdmin
+            ? "Admin ID"
+            : "Faculty ID";
 
     userId.placeholder = isStudent
         ? "Enter your student ID"
-        : "Enter your faculty ID";
+        : isAdmin
+            ? "Enter your admin ID"
+            : "Enter your faculty ID";
 
     submitBtn.innerHTML = isRegister
         ? 'Create Account <span>→</span>'
@@ -73,7 +88,7 @@ function updateForm() {
     showField(nameField, isRegister);
     showField(emailField, isRegister);
     showField(classField, isRegister && isStudent);
-    showField(subjectField, isRegister && !isStudent);
+    showField(subjectField, isRegister && isFaculty);
     showField(confirmField, isRegister);
     showField(formOptions, !isRegister);
 
@@ -81,23 +96,29 @@ function updateForm() {
     setRequired(email, isRegister);
     setRequired(className, isRegister && isStudent);
     setRequired(section, isRegister && isStudent);
-    setRequired(subjects, isRegister && !isStudent);
+    setRequired(subjects, isRegister && isFaculty);
     setRequired(confirmPassword, isRegister);
 
-    switchText.innerHTML = isRegister
-        ? 'Already have an account? <button type="button" id="switchMode">Sign in</button>'
-        : 'New to DoubtHub? <button type="button" id="switchMode">Create an account</button>';
+    if (isAdmin) {
+        switchText.textContent = "";
+    } else {
+        switchText.innerHTML = isRegister
+            ? 'Already have an account? <button type="button" id="switchMode">Sign in</button>'
+            : 'New to DoubtHub? <button type="button" id="switchMode">Create an account</button>';
 
-    document.getElementById("switchMode").addEventListener(
-        "click",
-        toggleMode
-    );
+        document.getElementById("switchMode").addEventListener(
+            "click",
+            toggleMode
+        );
+    }
 
     message.textContent = "";
     message.className = "message";
 }
 
 function toggleMode() {
+    if (currentRole === "admin") return;
+
     currentMode = currentMode === "login" ? "register" : "login";
     authForm.reset();
     updateForm();
@@ -106,6 +127,7 @@ function toggleMode() {
 roles.forEach(function (button) {
     button.addEventListener("click", function () {
         currentRole = button.dataset.role;
+        currentMode = "login";
         authForm.reset();
         updateForm();
     });
@@ -118,6 +140,8 @@ loginTab.addEventListener("click", function () {
 });
 
 registerTab.addEventListener("click", function () {
+    if (currentRole === "admin") return;
+
     currentMode = "register";
     authForm.reset();
     updateForm();
@@ -139,8 +163,13 @@ authForm.addEventListener("submit", async function (event) {
     message.textContent = "";
     message.className = "message";
 
-    if (currentMode === "register") {
+    if (currentRole === "admin" && currentMode === "register") {
+        message.textContent = "Admin registration is not allowed.";
+        message.classList.add("error");
+        return;
+    }
 
+    if (currentMode === "register") {
         if (password.value.length < 8) {
             message.textContent =
                 "Password must contain at least 8 characters.";
@@ -219,9 +248,20 @@ authForm.addEventListener("submit", async function (event) {
                 JSON.stringify(result.user)
             );
 
-            window.location.href = currentRole === "student"
-                ? "studentDashboard.html"
-                : "facultyDashboard.html";
+            // Redirect according to the selected role.
+           // Force users to change their temporary password first.
+if (result.user.mustChangePassword === true) {
+    window.location.href = "changePassword.html";
+}
+
+// Redirect users who have already changed their password.
+else if (currentRole === "student") {
+    window.location.href = "studentDashboard.html";
+} else if (currentRole === "faculty") {
+    window.location.href = "facultyDashboard.html";
+} else if (currentRole === "admin") {
+    window.location.href = "adminDashboard.html";
+}
         }
 
     } catch (error) {
