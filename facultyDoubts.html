@@ -6,148 +6,379 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoubtHub | Class Doubts</title>
     <link rel="stylesheet" href="dashboard.css">
+
+    <script src="dashboard-auth.js" defer></script>
 </head>
-<body>
+
+<body data-role="faculty">
 
 <nav class="topbar">
-    <a href="facultyDashboard.html" class="brand">DoubtHub<span>.</span></a>
+    <a href="facultyDashboard.html" class="brand">
+        DoubtHub<span>.</span>
+    </a>
+
     <div class="top-links">
         <a href="facultyDashboard.html">Dashboard</a>
         <a href="facultyDoubts.html" class="active">Class Doubts</a>
-        <a href="index.html">Logout</a>
+        <a href="index.html" id="logoutLink">Logout</a>
     </div>
 </nav>
 
 <main class="page-container">
+
     <p class="eyebrow">CLASSROOM OVERVIEW</p>
+
     <h1 class="page-title">Student Doubts</h1>
+
     <p class="page-subtitle">
         Review questions from your assigned subjects and
         identify topics that may need additional explanation.
     </p>
 
+    <!-- Statistics -->
     <div class="card-grid">
+
         <div class="card">
-            <div class="stat-number">12</div>
+            <div class="stat-number" id="totalToday">--</div>
             <div class="stat-label">Total doubts today</div>
         </div>
 
         <div class="card">
-            <div class="stat-number">5</div>
+            <div class="stat-number" id="totalUnanswered">--</div>
             <div class="stat-label">Unanswered doubts</div>
         </div>
 
         <div class="card">
-            <div class="stat-number">7</div>
+            <div class="stat-number" id="totalAnswered">--</div>
             <div class="stat-label">Doubts with answers</div>
         </div>
+
     </div>
 
     <div class="section-heading">
-        <h2>Questions from your classroom</h2>
+        <h2>Questions from your assigned subjects</h2>
     </div>
 
+    <!-- Filters -->
     <div class="card">
+
         <div class="form-group">
             <label for="subjectFilter">Filter by subject</label>
+
             <select id="subjectFilter">
-                <option value="all">All subjects</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Database Management">Database Management</option>
-                <option value="Data Structures">Data Structures</option>
+                <option value="all">All assigned subjects</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="statusFilter">Filter by status</label>
+
             <select id="statusFilter">
                 <option value="all">All questions</option>
                 <option value="unanswered">Unanswered</option>
                 <option value="answered">Answered</option>
             </select>
         </div>
+
     </div>
 
+    <!-- Actual questions will be displayed here -->
     <div id="facultyQuestionList">
-        <article class="card question-card"
-                 data-subject="Web Development" data-status="unanswered">
-            <span class="badge">Web Development</span>
-            <span class="badge">Unanswered</span>
-            <h3>How does event bubbling work in JavaScript?</h3>
-            <div class="question-meta">
-                <span>Course code: WD101</span>
-                <span>•</span>
-                <span>Topic: JavaScript Events</span>
-            </div>
-            <p>Students have raised a question about how events move through HTML elements.</p>
-            <p class="form-note">Student identity hidden</p>
-        </article>
-
-        <article class="card question-card"
-                 data-subject="Database Management" data-status="answered">
-            <span class="badge badge-blue">Database Management</span>
-            <span class="badge badge-green">Answered</span>
-            <h3>What is the difference between sparse and dense indexing?</h3>
-            <div class="question-meta">
-                <span>Course code: DB102</span>
-                <span>•</span>
-                <span>Topic: Indexing</span>
-            </div>
-            <p>This question has received a classroom answer.</p>
-            <p class="form-note">Student identity hidden</p>
-        </article>
-
-        <article class="card question-card"
-                 data-subject="Data Structures" data-status="unanswered">
-            <span class="badge">Data Structures</span>
-            <span class="badge">Unanswered</span>
-            <h3>How do we implement a circular queue using an array?</h3>
-            <div class="question-meta">
-                <span>Course code: DS103</span>
-                <span>•</span>
-                <span>Topic: Queues</span>
-            </div>
-            <p>This topic may need additional explanation during class.</p>
-            <p class="form-note">Student identity hidden</p>
-        </article>
+        <div class="card">Loading questions...</div>
     </div>
 
     <p id="filterMessage" class="form-note" aria-live="polite"></p>
+
 </main>
 
-<footer class="footer">© 2026 DoubtHub · Faculty Dashboard</footer>
+<footer class="footer">
+    © 2026 DoubtHub · Faculty Dashboard
+</footer>
 
 <script>
-function filterQuestions() {
-    const subject = document.getElementById("subjectFilter").value;
-    const status = document.getElementById("statusFilter").value;
-    const cards = document.querySelectorAll("#facultyQuestionList .question-card");
-    let visibleCount = 0;
 
-    cards.forEach(function(card) {
-        const subjectMatches =
-            subject === "all" || card.dataset.subject === subject;
+// Get faculty login information
+const classDoubtsToken =
+    sessionStorage.getItem("doubthubToken");
 
-        const statusMatches =
-            status === "all" || card.dataset.status === status;
+const classDoubtsUser =
+    JSON.parse(sessionStorage.getItem("doubthubUser") || "null");
 
-        if (subjectMatches && statusMatches) {
-            card.style.display = "block";
-            visibleCount++;
-        } else {
-            card.style.display = "none";
-        }
-    });
+// Get page elements
+const questionList =
+    document.getElementById("facultyQuestionList");
 
-    document.getElementById("filterMessage").textContent =
-        visibleCount === 0 ? "No questions match these filters." : "";
+const subjectFilter =
+    document.getElementById("subjectFilter");
+
+const statusFilter =
+    document.getElementById("statusFilter");
+
+let allFacultyDoubts = [];
+
+// Convert text into safe HTML
+function escapeQuestionHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
 }
 
-document.getElementById("subjectFilter")
-    .addEventListener("change", filterQuestions);
+// Check whether doubt was posted today
+function wasPostedToday(dateValue) {
 
-document.getElementById("statusFilter")
-    .addEventListener("change", filterQuestions);
+    const date = new Date(dateValue);
+    const today = new Date();
+
+    return date.getFullYear() === today.getFullYear() &&
+        date.getMonth() === today.getMonth() &&
+        date.getDate() === today.getDate();
+}
+
+// Display appreciation badge
+function getAppreciationLabel(appreciation) {
+
+    if (!appreciation || !appreciation.badge) {
+        return "";
+    }
+
+    const labels = {
+        "curiosity-spark": "Curiosity Spark",
+        "deep-thinker": "Deep Thinker",
+        "mind-bender": "Mind Bender"
+    };
+
+    const label = labels[appreciation.badge];
+
+    if (!label) {
+        return "";
+    }
+
+    return `
+        <p class="form-note">
+            Appreciation: <strong>${escapeQuestionHTML(label)}</strong>
+        </p>
+    `;
+}
+
+// Populate subject dropdown using faculty assignments
+function loadSubjectOptions() {
+
+    const assignedSubjects =
+        classDoubtsUser?.subjects || [];
+
+    subjectFilter.innerHTML =
+        '<option value="all">All assigned subjects</option>';
+
+    assignedSubjects.forEach(subject => {
+
+        const option = document.createElement("option");
+
+        option.value = subject;
+        option.textContent = subject;
+
+        subjectFilter.appendChild(option);
+    });
+}
+
+// Calculate statistics
+function updateStatistics(doubts) {
+
+    const todayDoubts =
+        doubts.filter(d => wasPostedToday(d.createdAt));
+
+    const unanswered =
+        doubts.filter(d => !d.answers || d.answers.length === 0);
+
+    const answered =
+        doubts.filter(d => d.answers && d.answers.length > 0);
+
+    document.getElementById("totalToday").textContent =
+        todayDoubts.length;
+
+    document.getElementById("totalUnanswered").textContent =
+        unanswered.length;
+
+    document.getElementById("totalAnswered").textContent =
+        answered.length;
+}
+
+// Display question cards
+function displayQuestions(doubts) {
+
+    if (doubts.length === 0) {
+
+        questionList.innerHTML = `
+            <div class="card">
+                No questions match these filters.
+            </div>
+        `;
+
+        return;
+    }
+
+    questionList.innerHTML = doubts.map(doubt => {
+
+        const answered =
+            doubt.answers && doubt.answers.length > 0;
+
+        const status =
+            answered ? "Answered" : "Unanswered";
+
+        const appreciation =
+            getAppreciationLabel(doubt.appreciation);
+
+        return `
+            <article class="card question-card">
+
+                <span class="badge">
+                    ${escapeQuestionHTML(doubt.course)}
+                </span>
+
+                <span class="badge ${answered ? "badge-green" : ""}">
+                    ${status}
+                </span>
+
+                <h3>${escapeQuestionHTML(doubt.title)}</h3>
+
+                <div class="question-meta">
+                    <span>
+                        Course code:
+                        ${escapeQuestionHTML(doubt.courseCode)}
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                        Topic:
+                        ${escapeQuestionHTML(doubt.topic || "General")}
+                    </span>
+                </div>
+
+                <p>
+                    ${escapeQuestionHTML(doubt.description)}
+                </p>
+
+                <p class="form-note">
+                    ${answered
+                        ? doubt.answers.length + " answer(s)"
+                        : "No answers yet"}
+                </p>
+
+                ${appreciation}
+
+                <p class="form-note">
+                    Student identity hidden
+                </p>
+
+            </article>
+        `;
+
+    }).join("");
+}
+
+// Apply subject and status filters
+function filterQuestions() {
+
+    const selectedSubject = subjectFilter.value;
+    const selectedStatus = statusFilter.value;
+
+    let filtered = allFacultyDoubts;
+
+    if (selectedSubject !== "all") {
+
+        filtered = filtered.filter(doubt =>
+            doubt.course === selectedSubject
+        );
+    }
+
+    if (selectedStatus === "unanswered") {
+
+        filtered = filtered.filter(doubt =>
+            !doubt.answers || doubt.answers.length === 0
+        );
+
+    } else if (selectedStatus === "answered") {
+
+        filtered = filtered.filter(doubt =>
+            doubt.answers && doubt.answers.length > 0
+        );
+    }
+
+    displayQuestions(filtered);
+}
+
+// Fetch doubts from backend
+async function loadFacultyDoubts() {
+
+    try {
+
+        if (!classDoubtsToken) {
+            throw new Error("Please sign in again.");
+        }
+
+        if (!classDoubtsUser ||
+            classDoubtsUser.role !== "faculty") {
+            throw new Error("Faculty login required.");
+        }
+
+        loadSubjectOptions();
+
+        const response = await fetch("/api/doubts", {
+            method: "GET",
+
+            headers: {
+                "Authorization": "Bearer " + classDoubtsToken
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || "Unable to load doubts."
+            );
+        }
+
+        if (!Array.isArray(data)) {
+            throw new Error("Unexpected response from server.");
+        }
+
+        // Backend already filters by assigned subjects.
+        allFacultyDoubts = data;
+
+        // Calculate statistics using actual database data
+        updateStatistics(allFacultyDoubts);
+
+        // Display all assigned-subject doubts
+        displayQuestions(allFacultyDoubts);
+
+    } catch (error) {
+
+        console.error("Faculty doubts error:", error);
+
+        questionList.innerHTML = `
+            <div class="card">
+                ${escapeQuestionHTML(error.message)}
+            </div>
+        `;
+
+        document.getElementById("totalToday").textContent = "--";
+        document.getElementById("totalUnanswered").textContent = "--";
+        document.getElementById("totalAnswered").textContent = "--";
+    }
+}
+
+// Filter events
+subjectFilter.addEventListener("change", filterQuestions);
+statusFilter.addEventListener("change", filterQuestions);
+
+// Start
+loadFacultyDoubts();
+
 </script>
 
 </body>
